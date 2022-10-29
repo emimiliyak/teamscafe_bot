@@ -1,14 +1,15 @@
 import sqlite3
-
+from requests import get
 import telebot
-from telebot import types
+from telebot import types, TeleBot
 
+img = open('kill.jpg', 'rb')
 token = '5413781303:AAGl7yCM7_XTy7EI0VDtS5lm4q8aCTF-ZnY'
 
 keyboard = telebot.types.ReplyKeyboardMarkup(True, True)
 keyboard1 = telebot.types.ReplyKeyboardMarkup(True)
 
-bot = telebot.TeleBot('5413781303:AAGl7yCM7_XTy7EI0VDtS5lm4q8aCTF-ZnY')
+bot: TeleBot = telebot.TeleBot('5413781303:AAGl7yCM7_XTy7EI0VDtS5lm4q8aCTF-ZnY')
 
 conn = sqlite3.connect('db/database.db', check_same_thread=False)
 cursor = conn.cursor()
@@ -66,17 +67,9 @@ def func(message, markup=None):
         btn3 = types.KeyboardButton("Не имеет значения")
         markup.add(btn1, btn2, btn3)
         bot.send_message(message.chat.id, text="Кого вы хотите найти?", reply_markup=markup)
-    elif message.text == "Мужчину" or 'Женщину' or 'Не имеет значения':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        bot.send_message(message.from_user.id, 'Ваша должность? ', reply_markup = keyboard1)
-    elif message.text == "Аудитор":
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        bot.send_message(message.chat.id, text="Ваше имя?", reply_markup=markup)
-    elif message.text == 'Егор':
-        bot.send_message(message.chat.id, text="Спасибо за прохождение анкеты! Удачи с поисками!", reply_markup=markup)
-        bot.send_photo(id, photo= 'kill.jpg' , caption='желаемый текст')
     else:
         bot.send_message(message.chat.id, text="Я вас не понимаю")
+
 
         us_id = message.from_user.id
         us_name = message.from_user.first_name
@@ -84,7 +77,6 @@ def func(message, markup=None):
         username = message.from_user.username
 
         db_table_val(user_id=us_id, user_name=us_name, user_surname=us_sname, username=username)
-
 
 def after_text_2(message):
     print('введённый пользователем номер телефона на шаге "В каком отделе вы работаете?":', message.text)
